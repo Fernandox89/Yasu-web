@@ -1,6 +1,6 @@
-# VoiceGuard · página
+# Yasu · página
 
-Front de **VoiceGuard** (HackMTY 2026, reto Altur): detecta si quien llama es una persona o una IA.
+Front de **Yasu** (HackMTY 2026, reto Altur): detecta si quien llama es una persona o una IA.
 
 - **Analizar** (`index.html`): suelta un WAV, varios, una carpeta o un `.zip`. Si también sueltas el `manifest.csv`, compara cada resultado con su etiqueta.
 - **Resultados** (`resultados.html`): historial de cada llamada analizada en ese navegador, con búsqueda, filtros (IA, humano, aciertos, fallos), orden por columna, lotes y descarga en CSV.

@@ -399,7 +399,7 @@
     const csv = [cabecera, ...filas].map((f) => f.map((x) => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n");
     const enlace = document.createElement("a");
     enlace.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-    enlace.download = `voiceguard_resultados_${new Date().toISOString().slice(0, 10)}.csv`;
+    enlace.download = `yasu_resultados_${new Date().toISOString().slice(0, 10)}.csv`;
     enlace.click();
     setTimeout(() => URL.revokeObjectURL(enlace.href), 1000);
   });
@@ -416,9 +416,9 @@
   });
 
   // Acceso desde la consola del navegador, útil para probar sin arrastrar archivos:
-  //   VoiceGuard.analizarBuffer(arrayBuffer, "llamada.wav")
-  //   VoiceGuard.recibir([archivoWav, archivoManifest])
-  window.VoiceGuard = {
+  //   Yasu.analizarBuffer(arrayBuffer, "llamada.wav")
+  //   Yasu.recibir([archivoWav, archivoManifest])
+  window.Yasu = {
     estado,
     recibir,
     analizarBuffer: (buffer, nombre = "audio.wav") => recibir([new File([buffer], nombre, { type: "audio/wav" })]),

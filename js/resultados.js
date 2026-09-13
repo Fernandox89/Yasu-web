@@ -225,7 +225,7 @@
   }
   $("btnCsv").addEventListener("click", () => {
     const hoy = new Date().toISOString().slice(0, 10);
-    H.descargarCsv(ordenados(filtrados()), `voiceguard_historial_${ui.fuente === "equipo" ? "equipo_" : ""}${hoy}.csv`);
+    H.descargarCsv(ordenados(filtrados()), `yasu_historial_${ui.fuente === "equipo" ? "equipo_" : ""}${hoy}.csv`);
   });
   $("btnBorrar").addEventListener("click", () => {
     if (!confirm("¿Borrar todo el historial de llamadas de este navegador? No se puede deshacer.")) return;
