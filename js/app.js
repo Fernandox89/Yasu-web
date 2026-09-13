@@ -178,7 +178,7 @@
       it.avisos = W.revisarFormato(it.info);
       const url = urlApi();
       it.resultado = url
-        ? await llamarApi(url, buffer)
+        ? await llamarApi(url, buffer, it)
         : A.reglaLocal(W.decodificar(buffer, it.info), it.info.sr, C.REGLA_LOCAL);
       it.estado = "listo";
     } catch (err) {
@@ -187,20 +187,38 @@
     }
   }
 
-  async function llamarApi(url, buffer) {
-    let respuesta;
+  // Misma petición y mismas reglas que el juez de Altur (scripts/check_endpoint.py).
+  async function llamarApi(url, buffer, it) {
+    const limite = (C.TIEMPO_LIMITE_S || 30) * 1000;
+    const control = new AbortController();
+    const reloj = setTimeout(() => control.abort(), limite);
+    let respuesta, j;
     try {
       respuesta = await fetch(url + C.RUTA_DETECT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [C.CAMPO_AUDIO]: W.aBase64(buffer) }),
+        body: JSON.stringify({
+          call_id: it.nombre.replace(/\.wav$/i, ""),
+          [C.CAMPO_AUDIO]: W.aBase64(buffer),
+          sample_rate: it.info.sr,
+          channels: it.info.canales,
+        }),
+        signal: control.signal,
       });
+      if (!respuesta.ok) throw new Error(`la API respondió HTTP ${respuesta.status} (el juez lo cuenta como incorrecta)`);
+      j = await respuesta.json();
     } catch (e) {
+      if (e.name === "AbortError") throw new Error(`la API no respondió en ${limite / 1000} s (el juez lo cuenta como incorrecta)`);
+      if (e instanceof SyntaxError) throw new Error("la respuesta de la API no es JSON");
+      if (e.message.startsWith("la API")) throw e;
       throw new Error("no se pudo conectar con la API (revisa la dirección, HTTPS y CORS)");
+    } finally {
+      clearTimeout(reloj);
     }
-    if (!respuesta.ok) throw new Error(`la API respondió ${respuesta.status}`);
-    const j = await respuesta.json();
-    if (typeof j.is_synthetic !== "boolean") throw new Error("la respuesta de la API no trae is_synthetic");
+    if (!j || typeof j.is_synthetic !== "boolean") throw new Error("la respuesta de la API no trae is_synthetic booleano");
+    if (j.confidence != null && !(typeof j.confidence === "number" && j.confidence >= 0 && j.confidence <= 1)) {
+      throw new Error("confidence debe ser un número entre 0 y 1");
+    }
     return { is_synthetic: j.is_synthetic, confidence: typeof j.confidence === "number" ? j.confidence : null, modo: "api" };
   }
 

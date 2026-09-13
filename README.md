@@ -46,6 +46,30 @@ Respuesta:
 
 **MongoDB:** la página nunca se conecta directo a la base. Todo lo que está aquí es público, así que una contraseña en el JavaScript quedaría expuesta. La página habla con la API y la API con MongoDB.
 
+## Despliegue en Vultr (página + API en el mismo servidor)
+
+Un servidor Ubuntu 24.04 con **Caddy** en el puerto 80: la página en `/` y la API en `/detect`. Caddy no limita el tamaño del cuerpo, y las llamadas del juez pesan hasta ~12 MB en base64. Nginx, en cambio, rechaza por defecto todo lo que pase de 1 MB.
+
+En el servidor, como root:
+
+```bash
+git clone https://github.com/Fernandox89/voiceguard-web /opt/voiceguard/web
+bash /opt/voiceguard/web/deploy/instalar.sh
+```
+
+- `deploy/instalar.sh`: instala Caddy y deja la API corriendo como servicio. Mientras no existe la API real, usa el servidor de ejemplo de Altur, que responde con una decisión de relleno.
+- `deploy/actualizar.sh`: trae la última versión de la página y reinicia los servicios.
+- `deploy/voiceguard-api.service`: servicio de systemd de la API. Para usar la API real solo se cambia `ExecStart`.
+- `deploy/Caddyfile`: rutas de la página y de la API. Oculta `.git` y `deploy/`.
+
+Cuando la página se abre desde el servidor, usa sola la API de ese mismo servidor; no hay que configurar nada. En GitHub Pages o en `localhost` usa el modo local.
+
+Para probar como lo hará el juez, desde otra computadora con el dataset de Altur:
+
+```bash
+python scripts/check_endpoint.py --url http://IP_DEL_SERVIDOR/detect --split val --n 20
+```
+
 ## Actualizar el dashboard
 
 Las gráficas salen de `data/metricas.json`. Cuando el modelo cambie, se actualiza ese archivo:
