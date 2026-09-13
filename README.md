@@ -56,14 +56,22 @@ La página se queda en GitHub Pages. En Railway corre solo la API (`POST /detect
 
 **Paso 1 · probar la infraestructura.** `deploy/Dockerfile` levanta el servidor de ejemplo de Altur, que responde con una decisión de relleno.
 
-El servicio de Railway está conectado a este repo desde el panel. Cada push a `main` que toque `deploy/` o `railway.json` lo vuelve a construir. `railway.json` le dice a Railway qué hacer:
+Railway debe construir **solo la carpeta `deploy/`**. Si construye la raíz del repo, encuentra `index.html` y sirve la página como sitio estático, no la API. Apuntar a `deploy/Dockerfile` desde un `railway.json` no funcionó: Railway lee ese archivo, pero no aplica sus valores. Por eso se sube solo `deploy/`, con el Dockerfile en su raíz, y los ajustes del servicio se hacen en el panel.
 
-- `builder: DOCKERFILE` y `dockerfilePath: deploy/Dockerfile`: sin esto, Railway ve `index.html` y sirve la página como sitio estático, no la API.
-- `watchPatterns`: los cambios que solo tocan la página no reconstruyen la API.
-- `sleepApplication: false`: el servicio no se duerme. Uno dormido puede responder 502 a la primera petición del juez.
-- `restartPolicyType: ALWAYS`: si el proceso se cae, Railway lo vuelve a levantar.
+Para desplegar se usa la CLI de Railway (`npm i -g @railway/cli`; en Windows también `scoop install railway`). Desde la raíz del repo, con la sesión iniciada (`railway login`) y el servicio elegido una vez con `railway link`:
 
-La dirección pública se crea una sola vez, en el panel: **Settings → Networking → Generate Domain**.
+```bash
+railway up deploy --path-as-root
+```
+
+Ajustes del servicio en el panel:
+
+- **Settings → Deploy → Serverless** apagado. Un servicio dormido puede responder 502 a la primera petición del juez.
+- Reinicio en caso de fallo (valor por defecto, hasta 10 intentos): si el proceso se cae, Railway lo vuelve a levantar.
+
+**Ojo con la conexión a GitHub:** si el servicio se construye desde este repo con cada push, en **Settings → Source → Root Directory** debe decir `/deploy`. Si no, un push cambiaría la API por la página.
+
+La dirección pública se crea una sola vez, en **Settings → Networking → Generate Domain** o con `railway domain`.
 
 Para probar como lo hará el juez, desde una computadora con el dataset de Altur:
 
