@@ -1,5 +1,5 @@
-// Configuración de la página. Para conectar la API solo hay que tocar este archivo
-// (o escribir la dirección en "Conexión con la API", que se guarda solo en ese navegador).
+// Configuración de la página. Para cambiar la dirección de la API solo hay que tocar este archivo.
+// Para forzar el modo local sin cambiar nada, se abre la página con ?modo=local al final de la dirección.
 // La API corre en Railway, aparte de la página. Con API_URL vacío se usa el modo local.
 
 window.VG_CONFIG = {

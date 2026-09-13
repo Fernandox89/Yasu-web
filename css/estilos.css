@@ -111,10 +111,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .botones { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
 .enlace-boton { font-size: .92rem; border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); padding: 8px 16px; border-radius: var(--pildora); }
 .enlace-boton:hover { border-color: var(--borde-fuerte); text-decoration: none; }
-.config { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
-.config input { font: inherit; font-size: .92rem; padding: 8px 14px; border-radius: var(--pildora); border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); min-width: 300px; flex: 1; }
-.config input:focus, .herramientas input:focus, .herramientas select:focus { outline: none; border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); }
-details summary { cursor: pointer; }
+.herramientas input:focus, .herramientas select:focus { outline: none; border-color: var(--acento); box-shadow: 0 0 0 3px var(--acento-suave); }
 
 /* ---------- Resultado de una llamada ---------- */
 .resultado { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin: 8px 0 18px; }
@@ -193,5 +190,4 @@ td.vacio { text-align: center; padding: 40px 10px; color: var(--texto-suave); wh
   h1 { font-size: 2.4rem; }
   .hero-panel { min-height: 220px; padding: 16px; }
   .rejilla.k2 { grid-template-columns: 1fr; }
-  .config input { min-width: 0; }
 }

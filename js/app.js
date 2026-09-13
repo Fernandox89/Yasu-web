@@ -4,34 +4,33 @@
 
   const C = window.VG_CONFIG, W = window.VGWav, A = window.VGAnalisis;
   const $ = (id) => document.getElementById(id);
-  const CLAVE_API = "vg_api_url";
   const H = window.VGHistorial;   // historial que muestra la pestaña Resultados
   const estado = { items: [], etiquetas: new Map(), seleccionado: null, corriendo: false };
 
   // ---------- Utilidades ----------
   const escapar = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const leerLocal = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
-  const guardarLocal = (k, v) => { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { /* navegador sin almacenamiento */ } };
   const mensaje = (t) => { $("mensaje").textContent = t; };
   const pct = (x) => `${Math.round(x * 100)} %`;
   const etiquetaReal = (it) => estado.etiquetas.get(it.nombre.replace(/\.wav$/i, "")) || null;
 
-  // "local" guardado en el navegador fuerza el modo local aunque config.js tenga API_URL.
+  // ?modo=local en la dirección fuerza el modo local aunque config.js tenga API_URL (respaldo si la API falla en una demo).
+  const MODO_LOCAL_FORZADO = new URLSearchParams(location.search).get("modo") === "local";
+
   function urlApi() {
-    const guardada = leerLocal(CLAVE_API);
-    if (guardada === "local") return "";
-    return (guardada || C.API_URL || "").trim().replace(/\/+$/, "");
+    return MODO_LOCAL_FORZADO ? "" : String(C.API_URL || "").trim().replace(/\/+$/, "");
   }
 
   function pintarModo() {
     const url = urlApi();
+    const reglaLocal = `El audio <b>no sale de tu navegador</b>: se decide con la latencia de quien llama (${escapar(C.REGLA_LOCAL.aciertos_val)} aciertos en validación).`;
     if (url) {
       const mixto = location.protocol === "https:" && url.startsWith("http:");
       $("avisoModo").innerHTML = `<span aria-hidden="true">🔌</span><div><span class="modo">Modo API</span> · cada audio se manda a <code>${escapar(url + C.RUTA_DETECT)}</code> y responde el modelo.${mixto ? " <b>Ojo:</b> esta página va por HTTPS y la API por HTTP; el navegador bloqueará la llamada. La API necesita HTTPS." : ""}</div>`;
+    } else if (MODO_LOCAL_FORZADO) {
+      $("avisoModo").innerHTML = `<span aria-hidden="true">💻</span><div><span class="modo">Modo local</span> · forzado con <code>?modo=local</code>. ${reglaLocal} Quita <code>?modo=local</code> de la dirección para volver a usar la API.</div>`;
     } else {
-      $("avisoModo").innerHTML = `<span aria-hidden="true">💻</span><div><span class="modo">Modo local</span> · la API aún no está conectada. El audio <b>no sale de tu navegador</b>: se decide con la latencia de quien llama (${escapar(C.REGLA_LOCAL.aciertos_val)} aciertos en validación). El modelo completo responde cuando se conecte la API.</div>`;
+      $("avisoModo").innerHTML = `<span aria-hidden="true">💻</span><div><span class="modo">Modo local</span> · la API aún no está conectada. ${reglaLocal} El modelo completo responde cuando se conecte la API.</div>`;
     }
-    $("inApi").value = url;
   }
 
   // ---------- Entrada de archivos ----------
@@ -414,19 +413,6 @@
     $("detalle").classList.add("oculto");
     mensaje("");
     actualizarResumen();
-  });
-
-  $("btnGuardarApi").addEventListener("click", () => {
-    const valor = $("inApi").value.trim();
-    if (valor && !/^https?:\/\/\S+$/i.test(valor)) { mensaje("La dirección debe empezar con http:// o https://"); return; }
-    guardarLocal(CLAVE_API, valor || null);
-    pintarModo();
-    mensaje(valor ? "API guardada en este navegador." : "Se usará la dirección de config.js (si tiene).");
-  });
-  $("btnQuitarApi").addEventListener("click", () => {
-    guardarLocal(CLAVE_API, "local");
-    pintarModo();
-    mensaje("Modo local activado en este navegador.");
   });
 
   // Acceso desde la consola del navegador, útil para probar sin arrastrar archivos:

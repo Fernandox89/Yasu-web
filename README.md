@@ -27,7 +27,9 @@ Abrir el HTML con doble clic no sirve para el dashboard: el navegador bloquea qu
 | Modo | Cuándo | Qué hace |
 |---|---|---|
 | **Local** | `API_URL` vacío en `js/config.js` | Decide en el navegador con la **latencia de quien llama**: detecta la voz de cada canal por energía y mide cuánto tarda en contestar al agente. **60/71 aciertos** en validación. El audio no sale del navegador |
-| **API** | Con `API_URL` en `js/config.js`, o escrita en "Conexión con la API" | Manda cada WAV a la API y muestra lo que responde el modelo |
+| **API** | Con `API_URL` en `js/config.js` (hoy, la API en Railway) | Manda cada WAV a la API y muestra lo que responde el modelo |
+
+Si la API falla durante una demo, abre la página con `?modo=local` al final de la dirección (por ejemplo `https://fernandox89.github.io/voiceguard-web/?modo=local`) y usará el modo local sin cambiar nada.
 
 **Contrato que espera la página:**
 
