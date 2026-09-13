@@ -26,7 +26,7 @@ Abrir el HTML con doble clic no sirve para el dashboard: el navegador bloquea qu
 
 | Modo | Cuándo | Qué hace |
 |---|---|---|
-| **Local** | `API_URL` vacío en `js/config.js` (hoy) | Decide en el navegador con la **latencia de quien llama**: detecta la voz de cada canal por energía y mide cuánto tarda en contestar al agente. **60/71 aciertos** en validación. El audio no sale del navegador |
+| **Local** | `API_URL` vacío en `js/config.js` | Decide en el navegador con la **latencia de quien llama**: detecta la voz de cada canal por energía y mide cuánto tarda en contestar al agente. **60/71 aciertos** en validación. El audio no sale del navegador |
 | **API** | Con `API_URL` en `js/config.js`, o escrita en "Conexión con la API" | Manda cada WAV a la API y muestra lo que responde el modelo |
 
 **Contrato que espera la página:**
@@ -69,7 +69,7 @@ Ajustes del servicio en el panel:
 - **Settings → Deploy → Serverless** apagado. Un servicio dormido puede responder 502 a la primera petición del juez.
 - Reinicio en caso de fallo (valor por defecto, hasta 10 intentos): si el proceso se cae, Railway lo vuelve a levantar.
 
-**Ojo con la conexión a GitHub:** si el servicio se construye desde este repo con cada push, en **Settings → Source → Root Directory** debe decir `/deploy`. Si no, un push cambiaría la API por la página.
+**Ojo con la conexión a GitHub:** el servicio de Railway ya no está conectado a este repo y solo se despliega con `railway up`. Si alguien lo vuelve a conectar, un push cambiaría la API por la página.
 
 La dirección pública se crea una sola vez, en **Settings → Networking → Generate Domain** o con `railway domain`.
 
@@ -79,7 +79,7 @@ Para probar como lo hará el juez, desde una computadora con el dataset de Altur
 python scripts/check_endpoint.py --url https://ALGO.up.railway.app/detect --split val --n 20
 ```
 
-**Paso 2 · API real.** Cuando exista `/detect` en el repo del equipo, se despliega desde ahí con su propio Dockerfile. Para que esta página la use, la API debe permitir CORS desde GitHub Pages (ver arriba) y hay que poner su dirección en `API_URL` de `js/config.js`.
+**Paso 2 · API real (2026-09-13).** La API del repo del equipo ya corre en Railway, con CORS para GitHub Pages, y su dirección está en `API_URL` de `js/config.js`. Se despliega desde ese repo con `railway up`, usando su propio Dockerfile.
 
 ## Actualizar el dashboard
 

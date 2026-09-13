@@ -1,10 +1,10 @@
 // Configuración de la página. Para conectar la API solo hay que tocar este archivo
 // (o escribir la dirección en "Conexión con la API", que se guarda solo en ese navegador).
-// La API corre en Railway, aparte de la página. Mientras no exista la API real, se deja vacío y se usa el modo local.
+// La API corre en Railway, aparte de la página. Con API_URL vacío se usa el modo local.
 
 window.VG_CONFIG = {
-  // Dirección de la API en Railway, sin "/" al final (p. ej. https://voiceguard.up.railway.app). Vacío = modo local.
-  API_URL: "",
+  // Dirección de la API en Railway, sin "/" al final. Vacío = modo local.
+  API_URL: "https://voiceguard-web-production.up.railway.app",
   RUTA_DETECT: "/detect",
 
   // Igual que el juez: si la API tarda más, cuenta como respuesta incorrecta.
