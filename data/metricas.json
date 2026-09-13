@@ -1,6 +1,6 @@
 {
-  "actualizado": "2026-09-12",
-  "fuente": "features_final.csv del modelo XGBoost del equipo; evaluación honesta",
+  "actualizado": "2026-09-13",
+  "fuente": "Modelo CatBoost del equipo (models/modelo_catboost_altur.cbm, entrenado con features_final_vad.csv); métricas medidas con check_endpoint.py de Altur contra la API desplegada",
   "dataset": {
     "llamadas": 353,
     "train": 282,
@@ -9,29 +9,29 @@
     "ia": 203
   },
   "modelo": {
-    "tipo": "XGBoost",
+    "tipo": "CatBoost",
     "rasgos": 31,
-    "arboles": 196,
+    "arboles": 193,
     "parametros": {
-      "n_estimators": 200,
+      "iterations": 200,
       "learning_rate": 0.05,
-      "max_depth": 5,
-      "colsample_bytree": 0.6
+      "depth": 5,
+      "early_stopping_rounds": 10
     },
-    "llamadas_entrenamiento": 277
+    "llamadas_entrenamiento": 239
   },
   "val": {
-    "aciertos": 70,
+    "aciertos": 69,
     "total": 71,
-    "exactitud": 0.9859,
-    "auc": 1.0,
-    "exactitud_balanceada": 0.9853,
-    "brier": 0.011,
+    "exactitud": 0.9718,
+    "auc": 0.9984,
+    "exactitud_balanceada": 0.9718,
+    "brier": 0.024,
     "matriz": {
       "ia_bien": 33,
       "ia_como_humano": 1,
-      "humano_bien": 37,
-      "humano_como_ia": 0
+      "humano_bien": 36,
+      "humano_como_ia": 1
     },
     "roc": [
       [
@@ -44,6 +44,14 @@
       ],
       [
         0.0,
+        0.9412
+      ],
+      [
+        0.027,
+        0.9412
+      ],
+      [
+        0.027,
         1.0
       ],
       [
@@ -66,13 +74,13 @@
         1.0
       ],
       "humanas": [
-        32,
+        27,
         3,
+        3,
+        1,
         2,
         0,
-        0,
-        0,
-        0,
+        1,
         0,
         0,
         0
@@ -93,102 +101,76 @@
   },
   "importancia": [
     {
-      "rasgo": "latencia_cv",
-      "peso": 0.1315
-    },
-    {
       "rasgo": "latencia_mediana",
-      "peso": 0.1315
+      "peso": 0.2085
     },
     {
       "rasgo": "lfcc_std_1",
-      "peso": 0.0796
+      "peso": 0.0987
     },
     {
-      "rasgo": "lfcc_std_7",
-      "peso": 0.0745
+      "rasgo": "lfcc_mediana_5",
+      "peso": 0.0793
     },
     {
-      "rasgo": "lfcc_std_2",
-      "peso": 0.0423
+      "rasgo": "lfcc_std_3",
+      "peso": 0.0568
     },
     {
-      "rasgo": "latencia_varianza",
-      "peso": 0.0412
-    },
-    {
-      "rasgo": "inclinacion_espectral",
-      "peso": 0.0406
-    },
-    {
-      "rasgo": "lfcc_std_10",
-      "peso": 0.0384
-    },
-    {
-      "rasgo": "pct_respuestas_cortas",
-      "peso": 0.0336
-    },
-    {
-      "rasgo": "lfcc_mediana_1",
-      "peso": 0.0287
-    },
-    {
-      "rasgo": "lfcc_mediana_10",
-      "peso": 0.0275
+      "rasgo": "lfcc_mediana_8",
+      "peso": 0.0443
     },
     {
       "rasgo": "lfcc_std_8",
-      "peso": 0.0263
+      "peso": 0.0442
+    },
+    {
+      "rasgo": "lfcc_std_7",
+      "peso": 0.0398
+    },
+    {
+      "rasgo": "lfcc_mediana_2",
+      "peso": 0.0385
+    },
+    {
+      "rasgo": "lfcc_mediana_7",
+      "peso": 0.0281
+    },
+    {
+      "rasgo": "lfcc_mediana_10",
+      "peso": 0.0279
+    },
+    {
+      "rasgo": "lfcc_mediana_4",
+      "peso": 0.0271
+    },
+    {
+      "rasgo": "cpp",
+      "peso": 0.027
     }
   ],
   "escenarios": [
     {
-      "nombre": "Evaluación original (val decide el early stopping)",
-      "aciertos": 70.0,
+      "nombre": "CatBoost con el proceso de audio de main (API actual)",
+      "aciertos": 69,
+      "honesto": true
+    },
+    {
+      "nombre": "XGBoost v4 (API anterior)",
+      "aciertos": 67,
       "honesto": false
     },
     {
-      "nombre": "Honesto, todas las columnas",
-      "aciertos": 69.2,
-      "honesto": true
-    },
-    {
-      "nombre": "Honesto, sin vocoder_peak, latencia_varianza y latencia_cv",
-      "aciertos": 69.0,
-      "honesto": true
-    },
-    {
-      "nombre": "Entrenado con turns/, probado con detector de voz",
-      "aciertos": 66.2,
-      "honesto": true
-    },
-    {
-      "nombre": "Entrenado y probado con detector de voz",
-      "aciertos": 69.4,
-      "honesto": true
-    },
-    {
-      "nombre": "Solo voz (24 LFCC)",
-      "aciertos": 63.9,
-      "honesto": true
-    },
-    {
-      "nombre": "Solo latencia mediana",
-      "aciertos": 59.2,
-      "honesto": true
+      "nombre": "CatBoost con el proceso de audio anterior",
+      "aciertos": 65,
+      "honesto": false
     },
     {
       "nombre": "Regla local de esta página",
-      "aciertos": 60.0,
-      "honesto": true
+      "aciertos": 60,
+      "honesto": false
     }
   ],
-  "val_rango": {
-    "particiones": 10,
-    "min": 67,
-    "max": 71,
-    "media": 69.2
-  },
   "regla_local": {
     "aciertos": 60,
     "auc": 0.783,
@@ -197,10 +179,9 @@
     "escala_s": 2.95
   },
   "notas": [
-    "Evaluación honesta: se entrena sin las 5 llamadas reservadas como prueba, el early stopping usa 20 % de train y validación solo se mira al final.",
-    "Validación tiene 71 llamadas: cada llamada vale 1.4 puntos.",
-    "KPIs, matriz, ROC, histograma e importancia son de una partición (semilla 42); los escenarios son la media de 10 particiones.",
-    "Las voces sintéticas de validación no se parecen a las de train, así que el resultado no viene de memorizar voces.",
-    "Si la API detecta la voz por energía pero el modelo se entrenó con turns/, se esperan ~66/71; reentrenando con el mismo detector, ~69/71."
+    "Validación: 71 llamadas que el modelo no usó al entrenar (el early stopping usó 15 % de train). Cada llamada vale 1.4 puntos.",
+    "Métricas medidas el 2026-09-13 con check_endpoint.py de Altur contra la API desplegada, igual que lo hará el juez.",
+    "La API usa el proceso de audio de main (detector de voz por energía con umbral 40), el mismo con el que se entrenó CatBoost; con el proceso anterior acierta menos.",
+    "La comparación de modelos usa las mismas 71 llamadas para todos."
   ]
 }

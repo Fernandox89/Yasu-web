@@ -90,9 +90,9 @@ Las gráficas salen de `data/metricas.json`. Cuando el modelo cambie, se actuali
 | Campo | Qué es |
 |---|---|
 | `val` | Aciertos, AUC, exactitud balanceada, Brier, matriz de confusión, curva ROC e histograma de probabilidades en validación |
-| `val_rango` | Mínimo, máximo y media de aciertos repitiendo el entrenamiento con distintas particiones |
+| `val_rango` | Opcional: mínimo, máximo y media de aciertos repitiendo el entrenamiento con distintas particiones |
 | `importancia` | Peso de cada rasgo en el modelo |
-| `escenarios` | Aciertos de cada variante (`honesto: false` se pinta en gris) |
+| `escenarios` | Aciertos de cada opción en las mismas llamadas de validación (`honesto: true` es el modelo que usa la API y se pinta en azul; el resto, en gris) |
 | `regla_local` | Resultados de la regla que usa el modo local |
 | `notas` | Aclaraciones que se muestran abajo del dashboard |
 
