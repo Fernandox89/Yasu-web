@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>VoiceGuard · Llamadas analizadas</title>
   <meta name="description" content="Historial de las llamadas analizadas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@400;500&display=swap">
   <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
   <header class="barra">
     <div class="contenedor">
-      <a class="marca" href="index.html"><span class="marca-icono" aria-hidden="true">VG</span>VoiceGuard</a>
+      <a class="marca" href="index.html" aria-label="VoiceGuard"><span class="marca-icono" aria-hidden="true"></span><span class="marca-texto">VoiceGuard</span></a>
       <nav class="pestanas" aria-label="Secciones">
         <a href="index.html">Analizar</a>
         <a href="resultados.html" aria-current="page">Resultados</a>
@@ -20,8 +23,11 @@
   </header>
 
   <main class="contenedor">
-    <h1>Llamadas analizadas</h1>
-    <p class="subtitulo">Todo lo que se ha analizado desde la pestaña <a href="index.html">Analizar</a> en este navegador.</p>
+    <div class="encabezado-pagina">
+      <span class="insignia">Historial</span>
+      <h1>Llamadas analizadas</h1>
+      <p class="subtitulo">Todo lo que se ha analizado desde la pestaña <a href="index.html">Analizar</a> en este navegador.</p>
+    </div>
 
     <div class="aviso"><span aria-hidden="true">💾</span><div>El historial se guarda <b>solo en este navegador</b> y no se sube a ningún lado. Cuando esté conectada la base de datos, aquí se verán las llamadas de todo el equipo.</div></div>
 
@@ -72,7 +78,12 @@
     </section>
   </main>
 
-  <footer><div class="contenedor">HackMTY 2026 · Reto Altur · Equipo VoiceGuard</div></footer>
+  <footer>
+    <div class="contenedor">
+      <span>VoiceGuard · Equipo HackMTY 2026</span>
+      <span>Proyecto independiente para el reto de Altur; no es un sitio de Altur.</span>
+    </div>
+  </footer>
 
   <script src="js/historial.js"></script>
   <script src="js/resultados.js"></script>
