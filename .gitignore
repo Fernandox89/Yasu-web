@@ -1,0 +1,11 @@
+# Nunca subir datos del reto de Altur: no se pueden redistribuir
+*.wav
+*.zip
+manifest.csv
+audio/
+turns/
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoiceGuard · Dashboard del modelo</title>
+  <meta name="description" content="Qué tan bien distingue el modelo a personas de IAs.">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="barra">
+    <div class="contenedor">
+      <a class="marca" href="index.html"><span class="marca-icono" aria-hidden="true">VG</span>VoiceGuard</a>
+      <nav class="pestanas" aria-label="Secciones">
+        <a href="index.html">Analizar</a>
+        <a href="dashboard.html" aria-current="page">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <h1>Efectividad del modelo</h1>
+    <p class="subtitulo" id="dsSub">Cargando métricas…</p>
+
+    <div class="aviso"><span aria-hidden="true">ℹ️</span><div>Resultados en <b>validación</b>: llamadas con voces que el modelo no vio al entrenar. Solo se muestran totales; para actualizarlos se edita <code>data/metricas.json</code>.</div></div>
+
+    <div class="rejilla k4" id="kpis"></div>
+
+    <section class="rejilla k2">
+      <div class="tarjeta">
+        <h2>Matriz de confusión</h2>
+        <div class="matriz" id="matriz"></div>
+        <p class="suave" id="matrizNota"></p>
+      </div>
+      <div class="tarjeta">
+        <h2>Curva ROC</h2>
+        <div class="grafica"><canvas id="gRoc"></canvas></div>
+      </div>
+    </section>
+
+    <section class="rejilla k2">
+      <div class="tarjeta">
+        <h2>¿Qué tan seguro está?</h2>
+        <p class="suave" style="margin-top: -6px">Probabilidad de IA que dio el modelo a cada llamada, según lo que era en realidad.</p>
+        <div class="grafica"><canvas id="gHist"></canvas></div>
+      </div>
+      <div class="tarjeta">
+        <h2>Rasgos que más pesan</h2>
+        <p class="suave" style="margin-top: -6px">Cuánto aporta cada rasgo a las decisiones del modelo.</p>
+        <div class="grafica"><canvas id="gImp"></canvas></div>
+      </div>
+    </section>
+
+    <section class="tarjeta">
+      <h2>Comparación de escenarios</h2>
+      <p class="suave" style="margin-top: -6px">Aciertos en validación (de 71). En verde, evaluaciones honestas; en gris, la original.</p>
+      <div class="grafica alta"><canvas id="gEsc"></canvas></div>
+    </section>
+
+    <section class="rejilla k2">
+      <div class="tarjeta">
+        <h2>Sesión actual</h2>
+        <div id="sesion"></div>
+      </div>
+      <div class="tarjeta">
+        <h2>Detalles y notas</h2>
+        <dl class="detalles" id="detallesModelo"></dl>
+        <ul class="notas" id="notas" style="margin-top: 12px"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="contenedor">HackMTY 2026 · Reto Altur · Equipo VoiceGuard</div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
