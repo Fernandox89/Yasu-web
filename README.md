@@ -3,7 +3,10 @@
 Front de **VoiceGuard** (HackMTY 2026, reto Altur): detecta si quien llama es una persona o una IA.
 
 - **Analizar** (`index.html`): suelta un WAV, varios, una carpeta o un `.zip`. Si también sueltas el `manifest.csv`, compara cada resultado con su etiqueta.
+- **Resultados** (`resultados.html`): historial de cada llamada analizada en ese navegador, con búsqueda, filtros (IA, humano, aciertos, fallos), orden por columna, lotes y descarga en CSV.
 - **Dashboard** (`dashboard.html`): efectividad del modelo (`data/metricas.json`) y resumen de lo analizado en ese navegador.
+
+El historial se guarda **solo en el navegador** (`localStorage`), sin audio: únicamente el resultado de cada llamada. Cuando exista la API con MongoDB, basta con cambiar `js/historial.js` para leer y guardar ahí.
 
 Sitio publicado: https://fernandox89.github.io/voiceguard-web/
 
@@ -62,12 +65,15 @@ Solo van totales. **Nunca** datos por llamada ni identificadores.
 
 ```
 index.html          Analizar
+resultados.html     Resultados (historial)
 dashboard.html      Dashboard
-css/estilos.css     Estilos (modo claro y oscuro)
+css/estilos.css     Estilos (modo claro y oscuro, ancho completo)
 js/config.js        Dirección de la API y parámetros de la regla local
 js/wav.js           Lee WAV (PCM, μ-law, A-law), base64 y forma de onda
 js/analisis.js      Modo local: voz por energía, latencia y decisión
+js/historial.js     Guarda y lee el historial de llamadas (hoy en localStorage)
 js/app.js           Página Analizar
+js/resultados.js    Página Resultados
 js/dashboard.js     Dashboard
 data/metricas.json  Métricas del modelo
 ```

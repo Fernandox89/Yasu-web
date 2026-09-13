@@ -4,7 +4,8 @@
 
   const C = window.VG_CONFIG, W = window.VGWav, A = window.VGAnalisis;
   const $ = (id) => document.getElementById(id);
-  const CLAVE_API = "vg_api_url", CLAVE_SESION = "vg_sesion";
+  const CLAVE_API = "vg_api_url";
+  const H = window.VGHistorial;   // historial que muestra la pestaña Resultados
   const estado = { items: [], etiquetas: new Map(), seleccionado: null, corriendo: false };
 
   // ---------- Utilidades ----------
@@ -90,12 +91,15 @@
       return;
     }
 
+    if (manifiestos) H.actualizarEtiquetas(estado.etiquetas);   // por si los audios ya estaban en el historial
+
     if (!nuevos.length) {
       mensaje(manifiestos ? `Etiquetas cargadas (${estado.etiquetas.size}). Ahora suelta los audios.` : "No encontré archivos .wav.");
       if (manifiestos) { repintarTabla(); actualizarResumen(); }
       return;
     }
-    for (const n of nuevos) estado.items.push({ id: estado.items.length, ...n, estado: "en cola" });
+    const lote = Date.now().toString(36);   // todo lo que se suelta junto forma un lote
+    for (const n of nuevos) estado.items.push({ id: estado.items.length, lote, ...n, estado: "en cola" });
     mensaje(`${nuevos.length} audio(s) agregados${estado.etiquetas.size ? ` · ${estado.etiquetas.size} etiquetas del manifest` : ""}.`);
     $("lote").classList.remove("oculto");
     repintarTabla();
@@ -156,6 +160,7 @@
     const trabajador = async () => {
       for (let it = siguiente(); it; it = siguiente()) {
         await analizar(it);
+        if (!H.agregar(registroDe(it))) mensaje("No se pudo guardar el historial en este navegador.");
         repintarFila(it);
         actualizarResumen();
         if (it === estado.seleccionado) pintarDetalle(it);
@@ -197,6 +202,22 @@
     const j = await respuesta.json();
     if (typeof j.is_synthetic !== "boolean") throw new Error("la respuesta de la API no trae is_synthetic");
     return { is_synthetic: j.is_synthetic, confidence: typeof j.confidence === "number" ? j.confidence : null, modo: "api" };
+  }
+
+  // Lo que se guarda en el historial por cada llamada (sin audio: solo el resultado)
+  function registroDe(it) {
+    const r = it.resultado || {}, info = it.info, real = etiquetaReal(it);
+    const decidido = it.estado === "listo" && r.is_synthetic != null;
+    return {
+      id: `${it.lote}-${it.id}`, lote: it.lote, fecha: new Date().toISOString(), archivo: it.nombre,
+      duracion_s: info ? +info.duracion.toFixed(2) : null, canales: info ? info.canales : null, sr: info ? info.sr : null,
+      is_synthetic: decidido ? r.is_synthetic : null,
+      confidence: decidido && r.confidence != null ? +r.confidence.toFixed(4) : null,
+      latencia_mediana_s: r.latencia_mediana_s != null ? +r.latencia_mediana_s.toFixed(3) : null,
+      turnos_llamador: r.turnos_llamador ?? null, turnos_agente: r.turnos_agente ?? null,
+      real, acierto: real && decidido ? (real === "synthetic") === r.is_synthetic : null,
+      modo: r.modo || (urlApi() ? "api" : "local"), error: it.error || null,
+    };
   }
 
   // ---------- Tabla ----------
@@ -260,12 +281,6 @@
     if (conEtiqueta.length) texto += ` · con etiqueta: ${aciertos}/${conEtiqueta.length} aciertos (${pct(aciertos / conEtiqueta.length)})`;
     $("resumenLote").textContent = total ? texto : "";
     $("btnExportar").disabled = !listos.length;
-
-    guardarLocal(CLAVE_SESION, JSON.stringify({
-      fecha: new Date().toISOString(), modo: urlApi() ? "api" : "local",
-      analizadas: decididos.length, ia, humanas: decididos.length - ia, sin_decision: listos.length - decididos.length,
-      errores, con_etiqueta: conEtiqueta.length, aciertos, matriz,
-    }));
   }
 
   // ---------- Detalle de una llamada ----------

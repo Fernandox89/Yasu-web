@@ -128,8 +128,25 @@
   }
 
   function pintarSesion() {
-    let s = null;
-    try { s = JSON.parse(localStorage.getItem("vg_sesion") || "null"); } catch (e) { s = null; }
+    // Resumen del historial que guarda la pestaña Analizar (js/historial.js)
+    const registros = window.VGHistorial ? window.VGHistorial.leer() : [];
+    const decididas = registros.filter((r) => r.is_synthetic != null);
+    const conEtiqueta = decididas.filter((r) => r.acierto != null);
+    const matriz = { ia_bien: 0, ia_como_humano: 0, humano_bien: 0, humano_como_ia: 0 };
+    for (const r of conEtiqueta) {
+      const esIA = r.real === "synthetic";
+      if (esIA && r.is_synthetic) matriz.ia_bien++;
+      else if (esIA) matriz.ia_como_humano++;
+      else if (r.is_synthetic) matriz.humano_como_ia++;
+      else matriz.humano_bien++;
+    }
+    const ultimo = registros[registros.length - 1];
+    const s = registros.length ? {
+      modo: ultimo.modo, fecha: ultimo.fecha, analizadas: decididas.length,
+      ia: decididas.filter((r) => r.is_synthetic).length, humanas: decididas.filter((r) => !r.is_synthetic).length,
+      sin_decision: registros.filter((r) => r.is_synthetic == null && !r.error).length, errores: registros.filter((r) => r.error).length,
+      con_etiqueta: conEtiqueta.length, aciertos: conEtiqueta.filter((r) => r.acierto).length, matriz,
+    } : null;
     if (!s || !(s.analizadas || s.errores || s.sin_decision)) {
       $("sesion").innerHTML = `<p class="suave">Aún no hay llamadas analizadas en este navegador. Ve a <a href="index.html">Analizar</a> y suelta audios; si incluyes el <code>manifest.csv</code>, aquí verás cuántas acertó.</p>`;
       return;
@@ -147,6 +164,7 @@
     } else {
       html += `<p class="suave" style="margin-top: 12px">Sin etiquetas: suelta también el <code>manifest.csv</code> para medir aciertos.</p>`;
     }
+    html += `<p style="margin: 14px 0 0"><a href="resultados.html">Ver cada llamada en Resultados →</a></p>`;
     $("sesion").innerHTML = html;
   }
 })();

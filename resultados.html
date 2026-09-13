@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VoiceGuard · Llamadas analizadas</title>
+  <meta name="description" content="Historial de las llamadas analizadas.">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header class="barra">
+    <div class="contenedor">
+      <a class="marca" href="index.html"><span class="marca-icono" aria-hidden="true">VG</span>VoiceGuard</a>
+      <nav class="pestanas" aria-label="Secciones">
+        <a href="index.html">Analizar</a>
+        <a href="resultados.html" aria-current="page">Resultados</a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <h1>Llamadas analizadas</h1>
+    <p class="subtitulo">Todo lo que se ha analizado desde la pestaña <a href="index.html">Analizar</a> en este navegador.</p>
+
+    <div class="aviso"><span aria-hidden="true">💾</span><div>El historial se guarda <b>solo en este navegador</b> y no se sube a ningún lado. Cuando esté conectada la base de datos, aquí se verán las llamadas de todo el equipo.</div></div>
+
+    <div class="rejilla k4" id="kpisRes"></div>
+
+    <section class="tarjeta">
+      <div class="encabezado-bloque">
+        <h2 id="tituloTabla">Historial</h2>
+        <div class="botones" style="margin: 0">
+          <button type="button" id="btnCsv">Descargar CSV</button>
+          <button type="button" id="btnBorrar">Borrar historial</button>
+        </div>
+      </div>
+
+      <div class="herramientas">
+        <input type="search" id="buscar" placeholder="Buscar por archivo…" aria-label="Buscar por archivo">
+        <div class="chips" role="group" aria-label="Filtrar">
+          <button type="button" class="chip" data-filtro="todas" aria-pressed="true">Todas</button>
+          <button type="button" class="chip" data-filtro="ia" aria-pressed="false">IA</button>
+          <button type="button" class="chip" data-filtro="humano" aria-pressed="false">Humano</button>
+          <button type="button" class="chip" data-filtro="aciertos" aria-pressed="false">Aciertos</button>
+          <button type="button" class="chip" data-filtro="fallos" aria-pressed="false">Fallos</button>
+          <button type="button" class="chip" data-filtro="sin" aria-pressed="false">Sin decisión o error</button>
+        </div>
+        <select id="selLote" aria-label="Lote"><option value="">Todos los lotes</option></select>
+      </div>
+
+      <div class="tabla-envoltura">
+        <table>
+          <thead>
+            <tr>
+              <th class="ordenable" data-col="fecha">Fecha</th>
+              <th class="ordenable" data-col="archivo">Archivo</th>
+              <th class="ordenable" data-col="duracion_s">Duración</th>
+              <th>Formato</th>
+              <th class="ordenable" data-col="resultado">Resultado</th>
+              <th class="ordenable" data-col="confidence">Confianza</th>
+              <th class="ordenable" data-col="latencia_mediana_s">Latencia</th>
+              <th>Turnos</th>
+              <th class="ordenable" data-col="real">Real</th>
+              <th></th>
+              <th class="ordenable" data-col="modo">Modo</th>
+            </tr>
+          </thead>
+          <tbody id="filasRes"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="contenedor">HackMTY 2026 · Reto Altur · Equipo VoiceGuard</div></footer>
+
+  <script src="js/historial.js"></script>
+  <script src="js/resultados.js"></script>
+</body>
+</html>
