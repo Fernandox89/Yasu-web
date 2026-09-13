@@ -26,10 +26,14 @@
     <div class="encabezado-pagina">
       <span class="insignia">Historial</span>
       <h1>Llamadas analizadas</h1>
-      <p class="subtitulo">Todo lo que se ha analizado desde la pestaña <a href="index.html">Analizar</a> en este navegador.</p>
+      <p class="subtitulo" id="subtituloRes">Todo lo que se ha analizado desde la pestaña <a href="index.html">Analizar</a> en este navegador.</p>
+      <div class="chips" role="group" aria-label="De dónde leer el historial" style="margin-top: 0.75rem">
+        <button type="button" class="chip" data-fuente="local" aria-pressed="true">Este navegador</button>
+        <button type="button" class="chip" data-fuente="equipo" aria-pressed="false">Todo el equipo (MongoDB)</button>
+      </div>
     </div>
 
-    <div class="aviso"><span aria-hidden="true">💾</span><div>El historial se guarda <b>solo en este navegador</b> y no se sube a ningún lado. Cuando esté conectada la base de datos, aquí se verán las llamadas de todo el equipo.</div></div>
+    <div class="aviso" id="avisoRes"><span aria-hidden="true">💾</span><div>El historial de este navegador se guarda <b>solo aquí</b> y no se sube a ningún lado.</div></div>
 
     <div class="rejilla k4" id="kpisRes"></div>
 
@@ -85,6 +89,7 @@
     </div>
   </footer>
 
+  <script src="js/config.js"></script>
   <script src="js/historial.js"></script>
   <script src="js/resultados.js"></script>
 </body>

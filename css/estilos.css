@@ -169,6 +169,7 @@ dl.detalles dd { margin: 0; }
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip { padding: 6px 14px; font-size: .86rem; }
 .chip[aria-pressed="true"] { background: var(--texto); color: #fff; border-color: var(--texto); }
+.chip[aria-pressed="true"]:hover:not(:disabled) { background: var(--texto-fuerte); border-color: var(--texto-fuerte); }   /* sin esto, el hover general deja el fondo claro con texto blanco */
 th.ordenable { cursor: pointer; user-select: none; }
 th.ordenable::after { content: " ↕"; opacity: .35; }
 th.ordenable[aria-sort="ascending"]::after { content: " ↑"; opacity: 1; }

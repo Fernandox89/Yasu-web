@@ -7,6 +7,9 @@ window.VG_CONFIG = {
   API_URL: "https://voiceguard-web-production.up.railway.app",
   RUTA_DETECT: "/detect",
 
+  // Servicio aparte que lee de MongoDB lo que guardó la API (Resultados → Todo el equipo). Vacío = sin historial del equipo.
+  HISTORIAL_URL: "https://voiceguard-historial-production.up.railway.app",
+
   // Igual que el juez: si la API tarda más, cuenta como respuesta incorrecta.
   TIEMPO_LIMITE_S: 30,
 
