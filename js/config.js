@@ -1,12 +1,10 @@
 // Configuración de la página. Para conectar la API solo hay que tocar este archivo
 // (o escribir la dirección en "Conexión con la API", que se guarda solo en ese navegador).
-// En el servidor de Vultr la página y la API viven juntas: se usa la misma dirección de la página.
-// En GitHub Pages, en localhost o abriendo el archivo directo, no hay API y se usa el modo local.
-const VG_MISMO_SERVIDOR = !location.hostname.endsWith("github.io") && !["localhost", "127.0.0.1", ""].includes(location.hostname);
+// La API corre en Railway, aparte de la página. Mientras no exista la API real, se deja vacío y se usa el modo local.
 
 window.VG_CONFIG = {
-  // Dirección de la API, sin "/" al final. Vacío = modo local.
-  API_URL: VG_MISMO_SERVIDOR ? location.origin : "",
+  // Dirección de la API en Railway, sin "/" al final (p. ej. https://voiceguard.up.railway.app). Vacío = modo local.
+  API_URL: "",
   RUTA_DETECT: "/detect",
 
   // Igual que el juez: si la API tarda más, cuenta como respuesta incorrecta.

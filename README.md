@@ -46,29 +46,32 @@ Respuesta:
 
 **MongoDB:** la página nunca se conecta directo a la base. Todo lo que está aquí es público, así que una contraseña en el JavaScript quedaría expuesta. La página habla con la API y la API con MongoDB.
 
-## Despliegue en Vultr (página + API en el mismo servidor)
+## API en Railway
 
-Un servidor Ubuntu 24.04 con **Caddy** en el puerto 80: la página en `/` y la API en `/detect`. Caddy no limita el tamaño del cuerpo, y las llamadas del juez pesan hasta ~12 MB en base64. Nginx, en cambio, rechaza por defecto todo lo que pase de 1 MB.
+La página se queda en GitHub Pages. En Railway corre solo la API (`POST /detect`), con su propia dirección HTTPS (`https://ALGO.up.railway.app`).
 
-En el servidor, como root:
+- **Por qué Railway:** es de las plataformas que sugiere Altur, cada petición puede tardar hasta 5 minutos y no documenta límite de tamaño de cuerpo. Eso importa porque las llamadas del juez pesan hasta ~12 MB en base64.
+- **Por qué no Vercel:** rechaza cuerpos de más de 4.5 MB.
+- **Por qué un Dockerfile y no la detección automática de Railway:** el Dockerfile fija la versión de Python y el comando de arranque. Nadie necesita instalar Docker, porque Railway construye la imagen en sus servidores.
+
+**Paso 1 · probar la infraestructura.** `deploy/Dockerfile` levanta el servidor de ejemplo de Altur, que responde con una decisión de relleno.
+
+El servicio de Railway está conectado a este repo desde el panel. Cada push a `main` que toque `deploy/` o `railway.json` lo vuelve a construir. `railway.json` le dice a Railway qué hacer:
+
+- `builder: DOCKERFILE` y `dockerfilePath: deploy/Dockerfile`: sin esto, Railway ve `index.html` y sirve la página como sitio estático, no la API.
+- `watchPatterns`: los cambios que solo tocan la página no reconstruyen la API.
+- `sleepApplication: false`: el servicio no se duerme. Uno dormido puede responder 502 a la primera petición del juez.
+- `restartPolicyType: ALWAYS`: si el proceso se cae, Railway lo vuelve a levantar.
+
+La dirección pública se crea una sola vez, en el panel: **Settings → Networking → Generate Domain**.
+
+Para probar como lo hará el juez, desde una computadora con el dataset de Altur:
 
 ```bash
-git clone https://github.com/Fernandox89/voiceguard-web /opt/voiceguard/web
-bash /opt/voiceguard/web/deploy/instalar.sh
+python scripts/check_endpoint.py --url https://ALGO.up.railway.app/detect --split val --n 20
 ```
 
-- `deploy/instalar.sh`: instala Caddy y deja la API corriendo como servicio. Mientras no existe la API real, usa el servidor de ejemplo de Altur, que responde con una decisión de relleno.
-- `deploy/actualizar.sh`: trae la última versión de la página y reinicia los servicios.
-- `deploy/voiceguard-api.service`: servicio de systemd de la API. Para usar la API real solo se cambia `ExecStart`.
-- `deploy/Caddyfile`: rutas de la página y de la API. Oculta `.git` y `deploy/`.
-
-Cuando la página se abre desde el servidor, usa sola la API de ese mismo servidor; no hay que configurar nada. En GitHub Pages o en `localhost` usa el modo local.
-
-Para probar como lo hará el juez, desde otra computadora con el dataset de Altur:
-
-```bash
-python scripts/check_endpoint.py --url http://IP_DEL_SERVIDOR/detect --split val --n 20
-```
+**Paso 2 · API real.** Cuando exista `/detect` en el repo del equipo, se despliega desde ahí con su propio Dockerfile. Para que esta página la use, la API debe permitir CORS desde GitHub Pages (ver arriba) y hay que poner su dirección en `API_URL` de `js/config.js`.
 
 ## Actualizar el dashboard
 
